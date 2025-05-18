@@ -2,7 +2,8 @@ import { useState, useCallback } from 'react';
 import { useModSearch } from './hooks/useModSearch';
 import { useDebounce } from './hooks/useDebounce';
 import { ModCard } from './components/ModCard/ModCard';
-import Pagination from './components/Pagination';
+import Pagination from './components/ui/Pagination';
+import ControlBar from './components/ui/ControlBar';
 
 function App() {
   const itemsPerPage = 20;
@@ -28,17 +29,22 @@ function App() {
         id="searchInput"
         onChange={handleInputChange}
         placeholder="Search for a project..."
-        className="mt-8 w-full px-4 py-4 border border-[#44464f] focus:outline-none rounded-md text-white"
+        className="mt-8 w-full px-4 py-4 border border-bg-secondary focus:outline-none rounded-md text-contrast"
       />
-      <Pagination totalItems={details ? details.total_hits : itemsPerPage} itemsPerPage={itemsPerPage} currentPage={onPage} onPageChange={setOnPage} />
+      <ControlBar
+        details={details}
+        itemsPerPage={itemsPerPage}
+        onPage={onPage}
+        setOnPage={setOnPage}
+      />
       <div className="pt-4 flex flex-col gap-2">
         {isLoading ? (
-          <p className="text-white h-screen">Loading...</p>
+          <p className="text-contrast h-screen">Loading...</p>
         ) : (
           <>
             {error && <p className="text-red-500">Error: {error}</p>}
             {projects.length === 0 && !error && (
-              <p className="text-white">No projects found.</p>
+              <p className="text-contrast">No projects found.</p>
             )}
             {projects.map((project) => (
               <ModCard key={project.id} project={project} isListed={project.title[0] == "F" ? true : false} />
