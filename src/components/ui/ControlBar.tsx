@@ -30,18 +30,6 @@ const ControlBar: React.FC<ControlBarProps> = ({
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isSortOpen, setIsSortOpen] = useState(false);
 
-  const [activeFilters, setActiveFilters] = useState<{
-    loaders: string[];
-    versions: string[];
-    client_side: string | undefined;
-    server_side: string | undefined;
-  }>({ 
-    loaders: [],
-    versions: [],
-    client_side: undefined,
-    server_side: undefined
-  });
-
   const handleApplyFilters = (newFilters: ModSearchFilters) => {
     setFilters(newFilters);
     setOnPage(0);
@@ -49,7 +37,17 @@ const ControlBar: React.FC<ControlBarProps> = ({
   }
 
   const handleRemoveFilter = (category: string, id: string) => {
-    
+    setFilters((prevFilters) => {
+      const updatedFilters = { ...prevFilters };
+      if (category === 'loaders') {
+        updatedFilters.loaders = updatedFilters.loaders?.filter((loader: string) => loader !== id);
+      } else if (category === 'versions') {
+        updatedFilters.versions = updatedFilters.versions?.filter((version: string) => version !== id);
+      } else if (category === 'client_side' || category === 'server_side') {
+        updatedFilters[category] = undefined;
+      }
+      return updatedFilters;
+    });
   };
   
   const handleSortChange = (newSortBy: SortBy) => {
@@ -90,58 +88,60 @@ const ControlBar: React.FC<ControlBarProps> = ({
           )}
         </div>
       </div>
-      
-      {/* { activeFilters.loaders.map((loader) => (
-        <span key={`loader-${loader}`} className="flex items-center bg-gray-200 rounded px-2 py-1 text-xs">
-          {loader}
-          <button
-            className="ml-1"
-            onClick={() => handleRemoveFilter('loaders', loader)}
-            aria-label={`Remove loader filter ${loader}`}
-          >
-            <IconX size={12} />
-          </button>
-        </span>
-      ))}
 
-      { activeFilters.versions.map((version) => (
-        <span key={`version-${version}`} className="flex items-center bg-gray-200 rounded px-2 py-1 text-xs">
-          {version}
-          <button
-            className="ml-1"
-            onClick={() => handleRemoveFilter('versions', version)}
-            aria-label={`Remove version filter ${version}`}
-          >
-            <IconX size={12} />
-          </button>
-        </span>
-      ))}
+      <div className='mt-2 flex gap-2 flex-wrap'>
+        { filters.loaders?.map((loader) => (
+          <div key={`loader-${loader}`} className="px-2 py-0.5 flex gap-1 items-center bg-bg-secondar-muted border-2 border-bg-secondary rounded-full text-xs capitalize">
+            {loader}
+            <div
+              className="cursor-pointer"
+              onClick={() => handleRemoveFilter('loaders', loader)}
+              aria-label={`Remove loader filter ${loader}`}
+            >
+              <IconX size={12} className="hover:stroke-contrast"/>
+            </div>
+          </div>
+        ))}
 
-      { activeFilters.client_side && (
-        <span className="flex items-center bg-gray-200 rounded px-2 py-1 text-xs">
-          {activeFilters.client_side}
-          <button
-            className="ml-1"
-            onClick={() => handleRemoveFilter('client_side', activeFilters.client_side ? activeFilters.client_side : '')}
-            aria-label={`Remove client side filter ${activeFilters.client_side}`}
-          >
-            <IconX size={12} />
-          </button>
-        </span>
-      )}
+        { filters.versions?.map((version) => (
+          <div key={`version-${version}`} className="px-2 py-0.5 flex gap-1 items-center bg-bg-secondar-muted border-2 border-bg-secondary rounded-full text-xs capitalize">
+            {version}
+            <div
+              className="cursor-pointer"
+              onClick={() => handleRemoveFilter('versions', version)}
+              aria-label={`Remove version filter ${version}`}
+            >
+              <IconX size={12} className="hover:stroke-contrast"/>
+            </div>
+          </div>
+        ))}
 
-      { activeFilters.server_side && (
-        <span className="flex items-center bg-gray-200 rounded px-2 py-1 text-xs">
-          {activeFilters.server_side}
-          <button
-            className="ml-1"
-            onClick={() => handleRemoveFilter('server_side', activeFilters.server_side ? activeFilters.server_side : '')}
-            aria-label={`Remove server side filter ${activeFilters.server_side}`}
-          >
-            <IconX size={12} />
-          </button>
-        </span>
-      )} */}
+        { filters.client_side && (
+          <div className="px-2 py-0.5 flex gap-1 items-center bg-bg-secondar-muted border-2 border-bg-secondary rounded-full text-xs capitalize">
+            Client {filters.client_side}
+            <div
+              className="cursor-pointer"
+              onClick={() => handleRemoveFilter('client_side', filters.client_side ? filters.client_side : '')}
+              aria-label={`Remove client side filter ${filters.client_side}`}
+            >
+              <IconX size={12} className="hover:stroke-contrast"/>
+            </div>
+          </div>
+        )}
+
+        { filters.server_side && (
+          <div className="px-2 py-0.5 flex gap-1 items-center bg-bg-secondar-muted border-2 border-bg-secondary rounded-full text-xs capitalize">
+            Server {filters.server_side}
+            <div
+              className="cursor-pointer"
+              onClick={() => handleRemoveFilter('server_side', filters.server_side ? filters.server_side : '')}
+              aria-label={`Remove server side filter ${filters.server_side}`}
+            >
+              <IconX size={12} className="hover:stroke-contrast"/>
+            </div>
+          </div>
+        )}
+      </div>
 
       <FilterPopup
         isOpen={isFilterOpen}

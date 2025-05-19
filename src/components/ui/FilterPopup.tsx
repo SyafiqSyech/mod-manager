@@ -86,7 +86,7 @@ const FilterPopup: React.FC<FilterPopupProps> = ({ isOpen, onClose, currentFilte
               <label key={index} className="flex items-center">
                 <input
                   type="checkbox"
-                  checked={option.checked}
+                  checked={currentFilters.loaders?.includes(option.value) || option.checked}
                   onChange={() => {
                     const newLoaderOptions = [...loaderOptionsState];
                     newLoaderOptions[index].checked = !newLoaderOptions[index].checked;
@@ -105,7 +105,7 @@ const FilterPopup: React.FC<FilterPopupProps> = ({ isOpen, onClose, currentFilte
               <label key={index} className="flex items-center">
                 <input
                   type="checkbox"
-                  checked={option.checked}
+                  checked={currentFilters.versions?.includes(option.value) || option.checked}
                   onChange={() => {
                     const newVersionOptions = [...versionOptionsState];
                     newVersionOptions[index].checked = !newVersionOptions[index].checked;
@@ -126,7 +126,7 @@ const FilterPopup: React.FC<FilterPopupProps> = ({ isOpen, onClose, currentFilte
                   <input
                     type="radio"
                     name="clientSide"
-                    checked={sideSelectedOption.client === side}
+                    checked={currentFilters.client_side === side}
                     onChange={() => setSideSelectedOption({ ...sideSelectedOption, client: side as Sides })}
                   />
                   <span className="ml-2">{side as string}</span>
@@ -142,7 +142,7 @@ const FilterPopup: React.FC<FilterPopupProps> = ({ isOpen, onClose, currentFilte
                   <input
                     type="radio"
                     name="serverSide"
-                    checked={sideSelectedOption.server === side}
+                    checked={currentFilters.server_side === side}
                     onChange={() => setSideSelectedOption({ ...sideSelectedOption, server: side as Sides })}
                   />
                   <span className="ml-2">{side as string}</span>

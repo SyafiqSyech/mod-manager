@@ -24,12 +24,14 @@ export const useModSearch = (
 
       const filterArr: string[][] = [["project_type:mod"]];
       if (filters.loaders && filters.loaders.length > 0) {
-        const loadersArr = filters.loaders.map(loader => `categories:${loader}`);
-        filterArr.push(loadersArr);
+        filters.loaders.map(loader => 
+          filterArr.push([`categories:${loader}`])
+        );
       }
       if (filters.versions && filters.versions.length > 0) {
-        const versionsArr = filters.versions.map(version => `versions:${version}`);
-        filterArr.push(versionsArr);
+        filters.versions.map(version => 
+          filterArr.push([`versions:${version}`])
+        );
       }
       if (filters.client_side) {
         filterArr.push([`client_side:${filters.client_side}`]);
