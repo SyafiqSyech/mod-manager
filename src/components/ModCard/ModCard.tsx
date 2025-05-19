@@ -8,14 +8,14 @@ interface ModCardProps {
   isListed: boolean;
 }
 
-export const ModCard: React.FC<ModCardProps> = ({ project, isListed = false }) => {
+const ModCard: React.FC<ModCardProps> = ({ project, isListed = false }) => {
   return (
     <div className='bg-bg-secondary hover:bg-bg-secondary-muted rounded-xl p-2 grid grid-cols-[1fr_auto_1fr] gap-4'>
       <div className='flex gap-2 items-center overflow-hidden'>
         <img src={project.imageUrl} alt='Mod Image' className='w-16 h-16 rounded-lg border-1 border-[#44464f] bg-[#33363d]' />
         <div className='flex flex-col overflow-hidden'>
           <p className='font-bold text-contrast whitespace-nowrap overflow-hidden text-ellipsis' title={project.title}>{project.title}</p>
-          <p className='text-primary text-xs'>{project.versions.join(', ')}</p>
+          <p className='text-primary text-xs'>{project.author}</p>
           <div className='flex gap-1 pt-1'>
             {project.loaders.map(loader => (
               <p key={loader} className='text-primary text-xs rounded-full border-1 border-[#44464f] px-2'>{loader.charAt(0).toUpperCase() + loader.slice(1)}</p>
@@ -70,3 +70,5 @@ export const ModCard: React.FC<ModCardProps> = ({ project, isListed = false }) =
     </div>
   );
 }
+
+export default ModCard;

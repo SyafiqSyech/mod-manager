@@ -1,20 +1,30 @@
 import { useState, useCallback } from 'react';
 import { useModSearch } from './hooks/useModSearch';
 import { useDebounce } from './hooks/useDebounce';
-import { ModCard } from './components/ModCard/ModCard';
+import { ModSearchFilters, SortBy } from './types/modSearchFilters';
+import ModCard from './components/ModCard/ModCard';
 import Pagination from './components/ui/Pagination';
 import ControlBar from './components/ui/ControlBar';
 
 function App() {
   const itemsPerPage = 20;
-
   const [onPage, setOnPage] = useState<number>(0);
-  const debouncedOnPage = useDebounce<number>(onPage, 300);
-
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const debouncedSearchTerm = useDebounce<string>(searchTerm, 300);
+  const [filters, setFilters] = useState<ModSearchFilters>({});
+  const [sortBy, setSortBy] = useState<SortBy>('relevance');
 
-  const { projects, details, isLoading, error } = useModSearch(debouncedSearchTerm, itemsPerPage, itemsPerPage * debouncedOnPage);
+  const debouncedSearchTerm = useDebounce<string>(searchTerm, 300);
+  const debouncedOnPage = useDebounce<number>(onPage, 300);
+  const debouncedFilters = useDebounce<ModSearchFilters>(filters, 300);
+  const debouncedSortBy = useDebounce<SortBy>(sortBy, 300);
+
+  const { projects, details, isLoading, error } = useModSearch(
+    itemsPerPage, 
+    itemsPerPage * debouncedOnPage,
+    debouncedFilters,
+    debouncedSearchTerm, 
+    debouncedSortBy
+  );
 
   const handleInputChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setOnPage(0);
@@ -36,8 +46,12 @@ function App() {
         itemsPerPage={itemsPerPage}
         onPage={onPage}
         setOnPage={setOnPage}
+        filters={filters}
+        setFilters={setFilters}
+        sortBy={sortBy}
+        setSortBy={setSortBy}
       />
-      <div className="pt-4 flex flex-col gap-2">
+      <div className="mt-4 flex flex-col gap-2">
         {isLoading ? (
           <p className="text-contrast h-screen">Loading...</p>
         ) : (

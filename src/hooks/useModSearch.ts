@@ -2,8 +2,15 @@ import { useState, useEffect } from 'react';
 import { Project } from '../types/project';
 import { SearchResponseDetails } from '../types/searchResponseDetails';
 import { searchProjects } from '../services/modrinth';
+import { ModSearchFilters, SortBy, loadersEnum } from '../types/modSearchFilters';
 
-export const useModSearch = (searchTerm: string, limit: number = 10, offset: number = 0) => {
+export const useModSearch = (
+  limit: number = 10,
+  offset: number = 0,
+  filters: ModSearchFilters = {},
+  searchTerm: string,
+  sortBy: SortBy = 'relevance'
+) => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [details, setDetails] = useState<SearchResponseDetails>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -12,19 +19,37 @@ export const useModSearch = (searchTerm: string, limit: number = 10, offset: num
   useEffect(() => {
     const fetchProjects = async () => {
       setIsLoading(true);
-      searchProjects(limit, offset, searchTerm, [["project_type:mod"]])
+
+      const loaders = loadersEnum.map(loader => loader);
+
+      const filterArr: string[][] = [["project_type:mod"]];
+      if (filters.loaders && filters.loaders.length > 0) {
+        const loadersArr = filters.loaders.map(loader => `categories:${loader}`);
+        filterArr.push(loadersArr);
+      }
+      if (filters.versions && filters.versions.length > 0) {
+        const versionsArr = filters.versions.map(version => `versions:${version}`);
+        filterArr.push(versionsArr);
+      }
+      if (filters.client_side) {
+        filterArr.push([`client_side:${filters.client_side}`]);
+      }
+      if (filters.server_side) {
+        filterArr.push([`server_side:${filters.server_side}`]);
+      }
+
+      searchProjects(limit, offset, filterArr, searchTerm, sortBy)
         .then(data => {
           setProjects(() => {
             return data.hits.map((project: any) => {
-              const loaders = ['Fabric', 'Forge'].filter(loader => project.display_categories.includes(loader.toLowerCase()));
-              const versions = ['1.20.1', '1.21.1'].filter(version => project.versions.includes(version));
               return {
                 id: project.project_id,
                 title: project.title,
-                versions: versions.length > 0 ? versions : ['NONE'],
+                author: project.author,
+                versions: project.versions,
                 client_side: project.client_side,
                 server_side: project.server_side,
-                loaders: loaders.map(loader => loader.toLowerCase()),
+                loaders: loaders.filter(loader => project.display_categories.includes(loader)),
                 imageUrl: project.icon_url,
                 downloads: project.downloads,
               };
@@ -45,7 +70,7 @@ export const useModSearch = (searchTerm: string, limit: number = 10, offset: num
     };
 
     fetchProjects();
-  }, [searchTerm, limit, offset]);
+  }, [searchTerm, limit, offset, JSON.stringify(filters), sortBy]);
 
   return { projects, details, isLoading, error };
 };

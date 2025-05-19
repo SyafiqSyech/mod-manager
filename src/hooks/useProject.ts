@@ -20,6 +20,7 @@ export const useProject = (idOrSlug: string) => {
             server_side: data.server_side,
             loaders: data.loaders,
             imageUrl: data.icon_url,
+            downloads: data.downloads,
           };
           return projectData;
         });

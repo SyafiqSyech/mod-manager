@@ -12,10 +12,24 @@ export const getProject = async (idOrSlug: string) => {
   }
 };
 
-export const searchProjects = async (limit: number = 20, offset: number = 0, query: string, facets: string[][]) => {
+export const searchProjects = async (limit: number = 20, offset: number = 0, facets: string[][], query?: string, index?: string) => {
   try {
+    const params: Record<string, any> = {
+      limit,
+      offset,
+      facets: JSON.stringify(facets),
+    };
+
+    if (query) {
+      params.query = query;
+    }
+
+    if (index) {
+      params.index = index;
+    }
+    
     const response = await axios.get(`${BASE_URL}/search`, {
-      params: { limit, offset, query, facets: JSON.stringify(facets) },
+      params: params,
     });
     return response.data;
   } catch (error) {
@@ -24,4 +38,24 @@ export const searchProjects = async (limit: number = 20, offset: number = 0, que
   }
 };
 
+export const getVersions = async (version_type?: 'release' | 'snapshot' | 'alpha' | 'beta' | null, major?: boolean) => {
+  try {
+    const params: Record<string, any> = {};
 
+    if (version_type) {
+      params.version_type = version_type;
+    }
+
+    if (major) {
+      params.major = major;
+    }
+
+    const response = await axios.get(`${BASE_URL}/tag/game_version`, {
+      params: params,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching versions:', error);
+    throw error;
+  }
+}
