@@ -59,3 +59,15 @@ export const getVersions = async (version_type?: 'release' | 'snapshot' | 'alpha
     throw error;
   }
 }
+
+export const getMultipleProjects = async (ids: string[]) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/projects`, {
+      params: { ids: JSON.stringify(ids) }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching multiple projects:', error);
+    throw error;
+  }
+}

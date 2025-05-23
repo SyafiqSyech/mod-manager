@@ -1,73 +1,14 @@
-import { useState, useCallback } from 'react';
-import { useModSearch } from './hooks/useModSearch';
-import { useDebounce } from './hooks/useDebounce';
-import { ModSearchFilters, SortBy } from './types/modSearchFilters';
-import ModCard from './components/ModCard/ModCard';
-import Pagination from './components/ui/Pagination';
-import ControlBar from './components/ui/ControlBar';
+import { Routes, Route } from 'react-router-dom';
+import List from './pages/List';
+import SearchPage from './pages/SearchPage';
 
 function App() {
-  const itemsPerPage = 20;
-  const [onPage, setOnPage] = useState<number>(0);
-  const [searchTerm, setSearchTerm] = useState<string>('');
-  const [filters, setFilters] = useState<ModSearchFilters>({});
-  const [sortBy, setSortBy] = useState<SortBy>('relevance');
-
-  const debouncedSearchTerm = useDebounce<string>(searchTerm, 300);
-  const debouncedOnPage = useDebounce<number>(onPage, 300);
-  const debouncedFilters = useDebounce<ModSearchFilters>(filters, 300);
-  const debouncedSortBy = useDebounce<SortBy>(sortBy, 300);
-
-  const { projects, details, isLoading, error } = useModSearch(
-    itemsPerPage, 
-    itemsPerPage * debouncedOnPage,
-    debouncedFilters,
-    debouncedSearchTerm, 
-    debouncedSortBy
-  );
-
-  const handleInputChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    setOnPage(0);
-    setSearchTerm(event.target.value);
-  }, []);
-
   return (
-    <section className="w-full max-w-3xl mx-auto my-48">
-      <input
-        type="text"
-        name="searchInput"
-        id="searchInput"
-        onChange={handleInputChange}
-        placeholder="Search for a project..."
-        className="mt-8 w-full px-4 py-4 border border-bg-secondary focus:outline-none rounded-md text-contrast"
-      />
-      <ControlBar
-        details={details}
-        itemsPerPage={itemsPerPage}
-        onPage={onPage}
-        setOnPage={setOnPage}
-        filters={filters}
-        setFilters={setFilters}
-        sortBy={sortBy}
-        setSortBy={setSortBy}
-      />
-      <div className="mt-4 flex flex-col gap-2">
-        {isLoading ? (
-          <p className="text-contrast h-screen">Loading...</p>
-        ) : (
-          <>
-            {error && <p className="text-red-500">Error: {error}</p>}
-            {projects.length === 0 && !error && (
-              <p className="text-contrast">No projects found.</p>
-            )}
-            {projects.map((project) => (
-              <ModCard key={project.id} project={project} isListed={project.title[0] == "F" ? true : false} />
-            ))}
-          </>
-        )}
-      </div>
-    </section>
+    <Routes>
+      <Route path="/list" element={<List />} />
+      <Route path="/" element={<SearchPage />} />
+    </Routes>
   );
 }
 
-export default App
+export default App;

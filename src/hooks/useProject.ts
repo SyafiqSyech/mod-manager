@@ -5,7 +5,7 @@ import { Project } from '../types/project.ts';
 export const useProject = (idOrSlug: string) => {
   const [project, setProject] = useState<Project|null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setIsLoading(true);
@@ -14,6 +14,7 @@ export const useProject = (idOrSlug: string) => {
         setProject(() => {
           const projectData: Project = {
             id: data.id,
+            slug: data.slug,
             title: data.title,
             versions: data.versions,
             client_side: data.client_side,

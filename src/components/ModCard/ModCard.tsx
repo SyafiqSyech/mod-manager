@@ -6,9 +6,11 @@ import { IconCheck, IconDeviceDesktop, IconDownload, IconPlus, IconServer2, Icon
 interface ModCardProps {
   project: Project;
   isListed: boolean;
+  onAdd: (modId: string) => void;
+  onRemove: (modId: string) => void;
 }
 
-const ModCard: React.FC<ModCardProps> = ({ project, isListed = false }) => {
+const ModCard: React.FC<ModCardProps> = ({ project, isListed, onAdd, onRemove }) => {
   return (
     <div className='bg-bg-secondary hover:bg-bg-secondary-muted rounded-xl p-2 grid grid-cols-[1fr_auto_1fr] gap-4'>
       <div className='flex gap-2 items-center overflow-hidden'>
@@ -54,14 +56,20 @@ const ModCard: React.FC<ModCardProps> = ({ project, isListed = false }) => {
           <p className='text-primary'>downloads</p>
         </div>
         {isListed ? (
-          <div className='group/button border-2 bg-accent border-accent hover:bg-danger hover:border-danger rounded-lg flex gap-1 py-0.5 px-2 items-center cursor-pointer'>
+          <div
+            className='group/button border-2 bg-accent border-accent hover:bg-danger hover:border-danger rounded-lg flex gap-1 py-0.5 px-2 items-center cursor-pointer'
+            onClick={() => onRemove(project.id)}
+          >
             <IconCheck className='stroke-bg-secondary group-hover/button:hidden' size={16} stroke={3} />
             <p className='font-medium text-bg-secondary group-hover/button:hidden'>Added</p>
             <IconX className='stroke-bg-secondary group-hover/button:block hidden' size={16} stroke={3} />
             <p className='font-medium text-bg-secondary group-hover/button:block hidden'>Remove</p>
           </div>
         ) : (
-          <div className='group/button border-2 border-accent-muted hover:border-accent rounded-lg flex gap-1 py-0.5 px-2 items-center cursor-pointer'>
+          <div
+            className='group/button border-2 border-accent-muted hover:border-accent rounded-lg flex gap-1 py-0.5 px-2 items-center cursor-pointer'
+            onClick={() => onAdd(project.id)}
+          >
             <IconPlus className='stroke-accent-muted group-hover/button:stroke-accent' size={16} stroke={3} />
             <p className='font-medium text-accent-muted group-hover/button:text-accent'>Add</p>
           </div>

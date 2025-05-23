@@ -19,6 +19,5 @@
 }
 
 body{
-  background-color: var(--color-bg-primary);
-  color: var(--color-primary);
+  @apply w-full max-w-[80rem] mx-auto my-32 px-4 bg-bg-primary text-primary relative;
 }
