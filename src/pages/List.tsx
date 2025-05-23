@@ -55,30 +55,30 @@ const List = () => {
     <>
       <NavBar onPage='list' />
       <SearchBar setSearchTerm={setSearchTerm} />
-      <div className="container mx-auto mt-4 relative">
+      <div className="container mx-auto mt-4 min-h-[calc(100vh-10rem)]">
         <table className="w-full border-collapse">
             <colgroup>
-            <col className="w-[5%]" />
-            <col className="w-[60%]" />
-            <col className="w-[15%]" />
-            <col className="w-[15%]" />
-            <col className="w-[5%]" />
+            <col className="w-[1%]" />
+            <col className="w-[70%]" />
+            <col className="w-[14%]" />
+            <col className="w-[14%]" />
+            <col className="w-[1%]" />
             </colgroup>
           <thead className='bg-bg-secondary'>
             <tr>
               <th className="px-2 py-1 text-left">#</th>
               <th className="px-2 py-1 text-left">Title</th>
               <th className="px-2 py-1 text-left">
-                <span className="inline-flex items-center gap-1">
+                <span className="flex items-center gap-1">
                   <IconDeviceDesktop size={18} /> Client
                 </span>
               </th>
               <th className="px-2 py-1 text-left">
-                <span className="inline-flex items-center gap-1">
+                <span className="flex items-center gap-1">
                   <IconServer2 size={18} /> Server
                 </span>
               </th>
-              <th></th>
+              <th className='px-2 py-1 text-left'>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -115,7 +115,7 @@ const List = () => {
             )}
 
             {!isLoading && filteredProjects.map((project: Project, index: number) => (
-              <tr key={project.id} className="border-b border-bg-secondary">
+              <tr key={project.id} className="border-b border-bg-secondary hover:bg-bg-secondary-muted">
                 <td className="px-2 py-1 text-left">{index + 1}</td>
                 <td className="px-2 py-1 flex gap-2 items-center">
                   <img src={project.imageUrl} alt='Mod Image' className='w-8 h-8 rounded-lg border-1 border-[#44464f] bg-[#33363d]' />
