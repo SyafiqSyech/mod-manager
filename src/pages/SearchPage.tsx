@@ -1,4 +1,3 @@
-import React from 'react'
 import { useState, useCallback, useEffect } from 'react';
 import { useModSearch } from '../hooks/useModSearch';
 import { useDebounce } from '../hooks/useDebounce';
